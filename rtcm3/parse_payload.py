@@ -17,14 +17,17 @@ def getbitu(buff, pos, length):
     return bits
 
 
+#f = open('/tmp/tow.txt', 'w')
 
-GPS_LEAP_SECONDS = 18
+GPS_LEAP_SECONDS = 0 # 18
 def decode_msm_head(pkt, _sys):    #, sync, iod, h, hsize):
     staid = getbitu(pkt, 12, 12)
     print('station id:', staid)
     if _sys == 'GPS':
         tow = getbitu(pkt, 24, 30) * 0.001 - GPS_LEAP_SECONDS
         print('tow:', tow)
+        #f.write("tow: %s \n" % (tow))
+        #f.flush()
     else:
         print('unknown system')
         return
