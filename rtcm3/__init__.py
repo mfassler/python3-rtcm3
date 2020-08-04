@@ -34,7 +34,10 @@ def check_packet(pkt):
        ... payload ...
       3 bytes:  checksum
     '''
-    assert pkt[0] == 0xd3
+    #assert pkt[0] == 0xd3
+    if pkt[0] != 0xd3:
+        print(" ----------ERROR:  wrong start byte")
+        return
     plen, = struct.unpack('!H', pkt[1:3])
     if len(pkt) != (plen + 6):
         print("WARN: wrong packet size.  Packet is %d bytes, but header says %d" % (len(pkt), plen+6))
