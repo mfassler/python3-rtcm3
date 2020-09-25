@@ -18,7 +18,7 @@ except:
     from NTRIP_PROVIDERS_default import ntrip_providors
 
 
-server_info = ntrip_providors['softbank']
+server_info = ntrip_providors['docomo']
 
 
 
@@ -48,8 +48,12 @@ gps_sock_nmea.bind(("0.0.0.0", NMEA_RX_PORT))
 s = connect_and_auth(server_info)
 
 time.sleep(0.2)
-pkt2 = s.recv(40, socket.MSG_DONTWAIT)
-print(pkt2.decode())
+try:
+    pkt2 = s.recv(10, socket.MSG_DONTWAIT)
+except:
+    pass
+else:
+    print(pkt2.decode())
 
 
 packets = []
@@ -61,6 +65,7 @@ while True:
     for oneInput in inputs:
         if oneInput == s:
             aa = s.recv(1)
+
             if len(aa) == 0:
                 continue
 
@@ -91,11 +96,13 @@ while True:
                     pTypes.append(pType)
 
                     packets.append(pkt)
+                    #gps_sock_nmea.sendto(pkt, ('192.168.8.201', 27113))
+                    gps_sock_nmea.sendto(pkt, ('192.168.0.69', 27113))
 
         elif oneInput == gps_sock_nmea:
             pkt, addr = gps_sock_nmea.recvfrom(256)
             if b'GGA' in pkt:
-                #print(pkt)
+                print(pkt)
                 s.send(pkt)
 
 
