@@ -10,10 +10,40 @@ import bitstruct
 from _3rd_party.pymap3d.ecef2geodetic import ecef2geodetic
 
 
+## TODO:  This code is un-tested, but AFAICT, the only difference between
+## msg_type 1005 and 1006 is the last field for "antenna height"
+def decode_type1005(payload):
+    '''
+    Parse message type 1005:
+        stationary rtk reference station ARP (antenna reference point)
+    '''
+    # 12 bits message type == 1005
+    # 12 bits station ID
+    #  6 bits itrf
+    #  4 bits nothing?
+    # 38 bits ecef-X (signed)
+    #  2 bits nothing?
+    # 38 bits ecef-Y (signed)
+    #  2 bits nothing?
+    # 38 bits ecef-Z (signed)
+
+    assert len(payload) == 19
+
+    msg_type, staid, itrf, _nothing, rrX, _nothing2, rrY, _nothing3, rrZ, \
+        = bitstruct.unpack('u12u12u6u4s38u2s38u2s38', payload)
+
+    print("\n * RTK base station ARP and antenna height")
+    print("    - ECEF, meters: %.04f %.04f %.04f" % (rrX * 0.0001, rrY * 0.0001, rrZ * 0.0001))
+    lat, lon, alt = ecef2geodetic(rrX * 0.0001, rrY * 0.0001, rrZ * 0.0001)
+
+    print("    - Lat, Lon:", lat, lon)
+    print("    - elevation, meters: %.04f" % (alt))
+    print()
+
 
 def decode_type1006(payload):
     '''
-    Parse message type 1006:  
+    Parse message type 1006:
         stationary rtk reference station ARP (antenna reference point) + antenna height
     '''
     # 12 bits message type == 1006
@@ -130,8 +160,11 @@ def parse_payload(pkt):
     if r3_type not in pktTypes:
         print('  **** Unknown packet type:', r3_type)
 
-    if r3_type == 1006:
-        decode_type1006(pkt) 
+    if r3_type == 1005:
+        decode_type1005(pkt)
+
+    elif r3_type == 1006:
+        decode_type1006(pkt)
 
     elif r3_type == 1075:
         decode_msm5(pkt, 'GPS')
