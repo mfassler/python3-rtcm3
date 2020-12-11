@@ -54,6 +54,7 @@ except:
     pass
 else:
     print(pkt2.decode())
+    sys.stdout.flush()
 
 
 packets = []
@@ -104,6 +105,8 @@ while True:
             if b'GGA' in pkt:
                 print(pkt)
                 s.send(pkt)
+
+    sys.stdout.flush()
 
 
 
