@@ -127,6 +127,21 @@ def parse_payload(pkt):
         1006: None,  # stationary rtk reference station arp + antenna height
         1033: None,  # receiver and antenna descriptors
 
+        # "phaserangerate" means to correct for Doppler shift
+
+        # the u-blox documentation seems to imply that "high-precision" is
+        # mm-level accuracy, instead of cm-level accuracy
+
+        # Docomo's NTRIP service seems to provide only msm5 messages.
+
+        # u-blox documentation says to include 4072 messaes, which are
+        # proprietary to u-blox
+
+        # msm4:  full pseudorange and phaserange plus cnr
+        # msm5:  full pseudorange, phaserange, phaserangerate and cnr
+        # msm6:  full pseudorange and phaserange plus cnr (high-res)
+        # msm7:  full pseudorange, phaserange, phaserangerate and cnr (h-res)
+
         1074: None,  # msm4, GPS
         1075: None,  # msm5, GPS
         1076: None,  # msm6, GPS
@@ -154,8 +169,8 @@ def parse_payload(pkt):
 
         1230: None,  # glonass L1, L2 code-phase bias
 
-        # 4072.0 ?
-        # 4072.1 ?
+        # 4072.0 ? -- ublox proprietary message
+        # 4072.1 ? -- ublox proprietary message
     }
     if r3_type not in pktTypes:
         print('  **** Unknown packet type:', r3_type)
