@@ -169,8 +169,8 @@ def parse_payload(pkt):
 
         1230: None,  # glonass L1, L2 code-phase bias
 
-        # 4072.0 ? -- ublox proprietary message
-        # 4072.1 ? -- ublox proprietary message
+        # 4072.0 ublox proprietary message:  Reference station PVT
+        # 4072.1 ublox proprietary message:  Additional reference station information
     }
     if r3_type not in pktTypes:
         print('  **** Unknown packet type:', r3_type)
